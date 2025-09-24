@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PopcornFactory">
         <activity
-            android:name=".DetallePelicula"
+            android:name=".MovieDetail"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
