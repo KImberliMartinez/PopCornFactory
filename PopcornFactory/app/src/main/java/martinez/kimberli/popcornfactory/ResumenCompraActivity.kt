@@ -32,19 +32,9 @@ class ResumenCompraActivity : AppCompatActivity() {
 
 
 
-        val movieImages = arrayOf(
-            R.drawable.bighero6,
-            R.drawable.leapyear,
-            R.drawable.toystory,
-            R.drawable.fantasticbeasts,
-            R.drawable.spiderverse,
-            R.drawable.aeronauts,
-            R.drawable.nineteenseventeen,
-            R.drawable.mib,
-            R.drawable.harrypotter
-        )
-        if (posMovie in movieImages.indices) {
-            imageView.setImageResource(movieImages[posMovie])
+
+        if (posMovie!=-1) {
+            imageView.setImageResource(posMovie)
         } else {
             imageView.setImageResource(R.drawable.photo15770331178926d498c6c7921)
         }

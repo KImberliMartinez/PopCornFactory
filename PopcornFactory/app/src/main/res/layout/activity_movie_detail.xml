@@ -42,7 +42,7 @@
         android:layout_marginTop="15dp"
         android:paddingHorizontal="20dp"
         android:textSize="14sp"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:id="@+id/movie_sumary"/>
 
     <Button
