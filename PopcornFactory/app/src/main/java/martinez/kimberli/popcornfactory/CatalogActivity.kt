@@ -11,8 +11,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridView
 import android.util.Log
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class CatalogActivity : AppCompatActivity() {
@@ -28,12 +29,12 @@ class CatalogActivity : AppCompatActivity() {
         setContentView(R.layout.activity_catalog)
         cargarPeliculas()
         adapter = PeliculaAdapter(this, peliculas)
+        val recyclerView: RecyclerView=findViewById(R.id.lista_view)
 
-        var gridPelis: GridView = findViewById(R.id.movies_catalog)
-        // var gridSeries: GridView= findViewById(R.id.series_catalog)
+        recyclerView.adapter = adapter
 
-        gridPelis.adapter = adapter
-        //  gridSeries.adapter=seriesAdapter
+        val numberOfColumns=3
+        recyclerView.layoutManager=GridLayoutManager(this,numberOfColumns)
     }
 
     fun cargarPeliculas() {
@@ -130,60 +131,48 @@ class CatalogActivity : AppCompatActivity() {
     }
 
 }
+class PeliculaAdapter(
+    private val context: Context,
+    private val peliculas_list: ArrayList<Pelicula>
+) : RecyclerView.Adapter<PeliculaAdapter.PeliculaViewHolder>() {
 
-class PeliculaAdapter : BaseAdapter {
-
-    var context: Context? = null
-    var peliculas = ArrayList<Pelicula>()
-
-    constructor(context: Context, peliculas: ArrayList<Pelicula>) {
-        this.context = context
-        this.peliculas = peliculas
-
+    inner class PeliculaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val image: ImageView = itemView.findViewById(R.id.image_movie_cell)
+        val title: TextView = itemView.findViewById(R.id.movie_title_cell)
     }
 
-    override fun getView(
-        position: Int,
-        convertView: View?,
-        parent: ViewGroup?
-    ): View? {
-        var pelicula = peliculas[position]
-        var inflator = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        var vista = inflator.inflate(R.layout.cell_movie, null)
-        var image: ImageView = vista.findViewById(R.id.image_movie_cell)
-        var title: TextView = vista.findViewById(R.id.movie_title_cell)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeliculaViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.cell_movie, parent, false)
+        return PeliculaViewHolder(itemView)
+    }
 
+    override fun onBindViewHolder(
+        holder: PeliculaViewHolder,
+        position: Int
+    ) {
+        val pelicula: Pelicula = peliculas_list[position]
 
-        image.setImageResource(pelicula.image)
-        title.setText(pelicula.titulo)
+        // Asignación de datos
+        holder.image.setImageResource(pelicula.image)
+        holder.title.text = pelicula.titulo
 
-        image.setOnClickListener {
-            var seatsavaliables = 20 - pelicula.seats.size
-            Log.d("SEATS", "$seatsavaliables")
-            var intento = Intent(context, MovieDetail::class.java)
-            intento.putExtra("titulo", pelicula.titulo)
-            intento.putExtra("sinopsis", pelicula.sinopsis)
-            intento.putExtra("header", pelicula.header)
-            intento.putExtra("image", pelicula.image)
-            intento.putExtra("numberSeats", (seatsavaliables))
-            intento.putExtra("pos", position)
+        holder.image.setOnClickListener {
+            val seatsAvailable = 20 - pelicula.seats.size
+            Log.d("SEATS", "$seatsAvailable")
 
-            context!!.startActivity(intento)
-
+            val intento = Intent(context, MovieDetail::class.java).apply {
+                putExtra("titulo", pelicula.titulo)
+                putExtra("sinopsis", pelicula.sinopsis)
+                putExtra("header", pelicula.header)
+                putExtra("image", pelicula.image)
+                putExtra("numberSeats", seatsAvailable)
+                putExtra("pos", position)
+            }
+            context.startActivity(intento)
         }
-        return vista
     }
 
-    override fun getCount(): Int {
-        return peliculas.size
+    override fun getItemCount(): Int {
+        return peliculas_list.size
     }
-
-    override fun getItem(p0: Int): Any? {
-        return peliculas[0]
-    }
-
-    override fun getItemId(p0: Int): Long {
-        return p0.toLong()
-    }
-
 }
